@@ -9,6 +9,7 @@
 //
 
 #include "decomposer.hpp"
+#include "mrdocs/Support/ScopeExit.hpp"
 #include <cstdlib>
 
 #if __has_include(<cxxabi.h>)
@@ -22,13 +23,13 @@ std::string demangle(const char *mangled)
 #if __has_include(<cxxabi.h>)
     int status;
     char *demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+    const ScopeExit deallocation([=]() { std::free(demangled); });
     std::string result;
     if (status == 0) {
         result = demangled;
     } else {
         result = mangled;
     }
-    std::free(demangled);
     return result;
 #else
     return mangled;

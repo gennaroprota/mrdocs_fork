@@ -1,0 +1,201 @@
+//
+// Licensed under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+// Copyright (c) 2025 Gennaro Prota (gennaro.prota@gmail.com)
+//
+// Official repository: https://github.com/cppalliance/mrdocs
+//
+
+#ifndef MRDOCS_LIB_MAPREFLECTEDTYPE_HPP
+#define MRDOCS_LIB_MAPREFLECTEDTYPE_HPP
+
+#include <mrdocs/Metadata/Expression.hpp>
+#include <mrdocs/Metadata/Specifiers/ConstexprKind.hpp>
+#include <mrdocs/Metadata/Specifiers/ReferenceKind.hpp>
+#include <mrdocs/Metadata/Specifiers/StorageClassKind.hpp>
+#include <boost/describe.hpp>
+#include <boost/mp11.hpp>
+#include <locale>
+#include <string_view>
+#include <type_traits>
+
+namespace mrdocs {
+
+class DomCorpus;
+
+namespace detail {
+
+/** Helper to determine if a member should be mapped based on its value.
+*/
+template <typename T>
+constexpr bool
+shouldMapValue(T const& value)
+{
+    if constexpr (std::is_same_v<T, std::string>)
+    {
+        return !value.empty();
+    }
+    else if constexpr (std::is_same_v<T, ConstexprKind>)
+    {
+        return value != ConstexprKind::None;
+    }
+    else if constexpr (std::is_same_v<T, ReferenceKind>)
+    {
+        return value != ReferenceKind::None;
+    }
+    else if constexpr (std::is_same_v<T, StorageClassKind>)
+    {
+        return value != StorageClassKind::None;
+    }
+    else if constexpr (std::is_same_v<T, ExprInfo>)
+    {
+        return !value.Written.empty();
+    }
+    else
+    {
+        // All other types are always mapped.
+        return true;
+    }
+}
+
+/** Convert a member name to the corresponding DOM name.
+
+    E.g.:
+    - IsVariadic -> isVariadic
+*/
+inline
+std::string
+normalizeMemberName(std::string_view name)
+{
+    // Special cases.
+    if (name == "Constexpr")
+    {
+        return "constexprKind";
+    }
+    else if (name == "ReturnType")
+    {
+        return "return";
+    }
+    else if (name == "Noexcept")
+    {
+        return "exceptionSpec";
+    }
+    else if (name == "Explicit")
+    {
+        return "explicitSpec";
+    }
+    else if (name == "KeyKind")
+    {
+        return "tag";
+    }
+    else if (name == "Class")
+    {
+        return "usingClass";
+    }
+    else
+    {
+        std::string result(name);
+        if (!result.empty())
+        {
+            result.front() = std::tolower(result.front(), std::locale::classic());
+        }
+        return result;
+    }
+}
+
+}
+
+/** Automatically map all Boost.Describe'd members of a type to the DOM.
+
+    This replaces the manual `tag_invoke()` implementations with a single
+    call that handles all member mappings via reflection.
+
+    @param io The IO object to use for mapping.
+    @param obj The object to be mapped.
+    @param domCorpus The DomCorpus used to create the DOM values, or a null pointer.
+
+    Usage in a Symbol type:
+
+    @code
+    template <class IO>
+    void tag_invoke(
+        dom::LazyObjectMapTag t,
+        IO& io,
+        FunctionSymbol const& I,
+        DomCorpus const* domCorpus)
+    {
+        // First, map base Symbol members.
+        tag_invoke(t, io, I.asInfo(), domCorpus);
+
+        // Then, automatically map all FunctionSymbol-specific members.
+        mapReflectedType(io, I, domCorpus);
+    }
+    @endcode
+*/
+template <typename IO, typename T>
+    requires boost::describe::has_describe_members<T>::value
+void
+mapReflectedType(
+    IO& io,
+    T const& obj,
+    DomCorpus const* domCorpus)
+{
+    boost::mp11::mp_for_each<boost::describe::describe_members<T, boost::describe::mod_any_access>>(
+        [&](auto const& descriptor) {
+            using Descriptor = std::decay_t<decltype(descriptor)>;
+
+            constexpr char const* name = Descriptor::name;
+            auto const& value = obj.*Descriptor::pointer;
+
+            static_assert(
+                dom::HasValueFrom<std::decay_t<decltype(value)>, DomCorpus const*>,
+                "No ValueFrom() overload found for this member type");
+
+            if (detail::shouldMapValue(value))
+            {
+                if constexpr (dom::HasValueFromWithContext<std::decay_t<decltype(value)>, DomCorpus const*>)
+                {
+                    MRDOCS_ASSERT(domCorpus != nullptr);
+                    io.map(detail::normalizeMemberName(name), dom::ValueFrom(value, domCorpus));
+                }
+                else
+                {
+                    io.map(detail::normalizeMemberName(name), dom::ValueFrom(value));
+                }
+            }
+        });
+}
+
+/** Map all Boost.Describe'd members without converting values.
+
+    This version passes raw member values to `io.map()`, letting
+    the IO object handle conversion with its stored context.
+
+    @param io The IO object to use for mapping.
+    @param obj The object to be mapped.
+*/
+template <typename IO, typename T>
+    requires boost::describe::has_describe_members<T>::value
+void
+mapReflectedType(
+    IO& io,
+    T const& obj)
+{
+    boost::mp11::mp_for_each<boost::describe::describe_members<T, boost::describe::mod_any_access>>(
+        [&](auto const& descriptor)
+        {
+            using Descriptor = std::decay_t<decltype(descriptor)>;
+            constexpr char const* name = Descriptor::name;
+            auto const& value = obj.*Descriptor::pointer;
+            if (detail::shouldMapValue(value))
+            {
+                io.map(detail::normalizeMemberName(name), value);
+            }
+        });
+}
+
+}
+
+#endif

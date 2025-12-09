@@ -5,6 +5,7 @@
 //
 // Copyright (c) 2023 Krystian Stasiowski (sdkrystian@gmail.com)
 // Copyright (c) 2023 Alan de Freitas (alandefreitas@gmail.com)
+// Copyright (c) 2025 Gennaro Prota (gennaro.prota@gmail.com)
 //
 // Official repository: https://github.com/cppalliance/mrdocs
 //
@@ -14,6 +15,7 @@
 
 #include <mrdocs/Platform.hpp>
 #include <mrdocs/Dom.hpp>
+#include <mrdocs/Support/EnumToString.hpp>
 #include <string>
 
 namespace mrdocs {
@@ -29,12 +31,6 @@ enum class RecordKeyKind
     /// A C-style Union
     Union
 };
-
-/** Convert the key kind to its canonical string form.
-*/
-MRDOCS_DECL
-dom::String
-toString(RecordKeyKind kind) noexcept;
 
 /** Serialize the record key kind into a DOM value.
 */

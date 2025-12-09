@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 // Copyright (c) 2024 Fernando Pelliccioni (fpelliccioni@gmail.com)
+// Copyright (c) 2025 Gennaro Prota (gennaro.prota@gmail.com)
 //
 // Official repository: https://github.com/cppalliance/mrdocs
 //
@@ -17,6 +18,7 @@
 #include <mrdocs/Metadata/Symbol.hpp>
 #include <mrdocs/Metadata/Symbol/Source.hpp>
 #include <mrdocs/Metadata/Type.hpp>
+#include <mrdocs/Support/EnumToString.hpp>
 #include <vector>
 
 namespace mrdocs {
@@ -36,19 +38,6 @@ enum class UsingClass
     /// Using enum declaration class.
     Enum            // using enum
 };
-
-static constexpr
-std::string_view
-toString(UsingClass const& value)
-{
-    switch (value)
-    {
-    case UsingClass::Normal:    return "normal";
-    case UsingClass::Typename:  return "typename";
-    case UsingClass::Enum:      return "enum";
-    }
-    return "unknown";
-}
 
 /** Return the UsingClass as a @ref dom::Value string.
 
@@ -157,13 +146,7 @@ tag_invoke(
     dom::LazyObjectMapTag t,
     IO& io,
     UsingSymbol const& I,
-    DomCorpus const* domCorpus)
-{
-    tag_invoke(t, io, I.asInfo(), domCorpus);
-    io.map("usingClass", I.Class);
-    io.map("shadows", dom::LazyArray(I.ShadowDeclarations, domCorpus));
-    io.map("qualifier", I.IntroducedName);
-}
+    DomCorpus const* domCorpus);
 
 /** Map the UsingSymbol to a @ref dom::Value object.
 */

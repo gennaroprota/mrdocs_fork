@@ -583,7 +583,7 @@ lookupImpl(
                 }
                 else if (component.isConversion())
                 {
-                    MRDOCS_CHECK_OR(M.Class == FunctionClass::Conversion, matchRes);
+                    MRDOCS_CHECK_OR(M.FuncClass == FunctionClass::Conversion, matchRes);
                     MRDOCS_CHECK_OR(component.ConversionType == M.ReturnType, matchRes);
                 }
                 else

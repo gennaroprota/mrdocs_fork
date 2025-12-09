@@ -6,6 +6,7 @@
 //
 // Copyright (c) 2023 Vinnie Falco (vinnie.falco@gmail.com)
 // Copyright (c) 2023 Krystian Stasiowski (sdkrystian@gmail.com)
+// Copyright (c) 2025 Gennaro Prota (gennaro.prota@gmail.com)
 //
 // Official repository: https://github.com/cppalliance/mrdocs
 //
@@ -16,6 +17,7 @@
 #include <mrdocs/Platform.hpp>
 #include <mrdocs/ADT/Nullable.hpp>
 #include <mrdocs/Dom.hpp>
+#include <mrdocs/Support/EnumToString.hpp>
 #include <string>
 
 namespace mrdocs {
@@ -31,14 +33,6 @@ enum class FileKind
     /// File outside the source directory
     Other
 };
-
-/** Convert a FileKind to its string form.
-    @param kind File category to stringify.
-    @return String view describing the kind.
-*/
-MRDOCS_DECL
-std::string_view
-toString(FileKind kind);
 
 /** Map a FileKind into a DOM value.
     @param v Destination value to populate.

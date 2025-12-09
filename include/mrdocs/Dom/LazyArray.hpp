@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 // Copyright (c) 2024 Alan de Freitas (alandefreitas@gmail.com)
+// Copyright (c) 2025 Gennaro Prota (gennaro.prota@gmail.com)
 //
 // Official repository: https://github.com/cppalliance/mrdocs
 //
@@ -16,6 +17,7 @@
 #include <mrdocs/Support/Error.hpp>
 #include <ranges>
 #include <string_view>
+#include <vector>
 
 
 namespace mrdocs {
@@ -211,6 +213,26 @@ TransformArray(T const& arr, F const& f)
 }
 
 } // dom
+
+class DomCorpus;
+
+/** Map a vector of strings to a @ref dom::Value object.
+
+    @param v The output parameter to receive the dom::Value.
+    @param elems The vector of T's to convert.
+    @param domCorpus The DomCorpus used to resolve references.
+ */
+template <typename T>
+void
+tag_invoke(
+    dom::ValueFromTag,
+    dom::Value& v,
+    std::vector<T> const& elems,
+    DomCorpus const* domCorpus)
+{
+    v = dom::LazyArray(elems, domCorpus);
+}
+
 } // mrdocs
 
 

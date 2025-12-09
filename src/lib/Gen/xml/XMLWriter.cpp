@@ -187,8 +187,8 @@ writeFunction(
 
     constexpr std::string_view functionTagName = "function";
     tags_.open(functionTagName, {
-        { "class", toString(I.Class),
-            I.Class != FunctionClass::Normal },
+        { "class", toString(I.FuncClass),
+            I.FuncClass != FunctionClass::Normal },
         { "name", I.Name },
         { I.Access },
         { "exception-spec", except_spec,

@@ -11,6 +11,7 @@
 #ifndef MRDOCS_LIB_MAPREFLECTEDTYPE_HPP
 #define MRDOCS_LIB_MAPREFLECTEDTYPE_HPP
 
+#include <mrdocs/Dom/LazyArray.hpp>
 #include <mrdocs/Metadata/Expression.hpp>
 #include <mrdocs/Metadata/Specifiers/ConstexprKind.hpp>
 #include <mrdocs/Metadata/Specifiers/ReferenceKind.hpp>
@@ -20,12 +21,24 @@
 #include <locale>
 #include <string_view>
 #include <type_traits>
+#include <vector>
 
 namespace mrdocs {
 
 class DomCorpus;
 
 namespace detail {
+
+/** Type traits to identify special types that need custom handling.
+*/
+template <typename T>
+struct is_vector : std::false_type {};
+
+template <typename T, typename A>
+struct is_vector<std::vector<T, A>> : std::true_type {};
+
+template <typename T>
+inline constexpr bool is_vector_v = is_vector<T>::value;
 
 /** Helper to determine if a member should be mapped based on its value.
 */
@@ -105,6 +118,37 @@ normalizeMemberName(std::string_view name)
     }
 }
 
+/** Map a single member to the IO object.
+
+    This function template also decides how to map the member based on its type.
+*/
+template <typename IO, typename T>
+void
+mapMember(
+    IO& io,
+    std::string_view name,
+    T const& value,
+    DomCorpus const* domCorpus)
+{
+    std::string const domName = detail::normalizeMemberName(name);
+
+    if constexpr (detail::is_vector_v<T>)
+    {
+        // Vectors become lazy arrays — the decision is encapsulated here.
+        MRDOCS_ASSERT(domCorpus != nullptr);
+        io.map(domName, dom::LazyArray(value, domCorpus));
+    }
+    else if constexpr (dom::HasValueFromWithContext<T, DomCorpus const*>)
+    {
+        MRDOCS_ASSERT(domCorpus != nullptr);
+        io.map(domName, dom::ValueFrom(value, domCorpus));
+    }
+    else
+    {
+        io.map(domName, dom::ValueFrom(value));
+    }
+}
+
 }
 
 /** Automatically map all Boost.Describe'd members of a type to the DOM.
@@ -145,25 +189,19 @@ mapReflectedType(
     boost::mp11::mp_for_each<boost::describe::describe_members<T, boost::describe::mod_any_access>>(
         [&](auto const& descriptor) {
             using Descriptor = std::decay_t<decltype(descriptor)>;
+            using MemberType = std::decay_t<decltype(obj.*Descriptor::pointer)>;
 
             constexpr char const* name = Descriptor::name;
             auto const& value = obj.*Descriptor::pointer;
 
             static_assert(
-                dom::HasValueFrom<std::decay_t<decltype(value)>, DomCorpus const*>,
+                detail::is_vector_v<MemberType> ||
+                dom::HasValueFrom<MemberType, DomCorpus const*>,
                 "No ValueFrom() overload found for this member type");
 
             if (detail::shouldMapValue(value))
             {
-                if constexpr (dom::HasValueFromWithContext<std::decay_t<decltype(value)>, DomCorpus const*>)
-                {
-                    MRDOCS_ASSERT(domCorpus != nullptr);
-                    io.map(detail::normalizeMemberName(name), dom::ValueFrom(value, domCorpus));
-                }
-                else
-                {
-                    io.map(detail::normalizeMemberName(name), dom::ValueFrom(value));
-                }
+                detail::mapMember(io, detail::normalizeMemberName(name), value, domCorpus);
             }
         });
 }

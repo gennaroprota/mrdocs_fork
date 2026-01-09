@@ -72,7 +72,7 @@ BOOST_DESCRIBE_STRUCT(
 BOOST_DESCRIBE_STRUCT(
     FriendInfo,
     (),
-    (Type) // `id` intentionally omitted
+    (Type) // `id` intentionally omitted.
 )
 
 BOOST_DESCRIBE_STRUCT(
@@ -121,7 +121,7 @@ BOOST_DESCRIBE_STRUCT(
 BOOST_DESCRIBE_STRUCT(
     OverloadsSymbol,
     (SymbolCommonBase<SymbolKind::Overloads>),
-    (FuncClass, OverloadedOperator, Members) // ReturnType intentionally omitted.
+    (FuncClass, OverloadedOperator, Members) // `ReturnType` intentionally omitted.
 )
 
 BOOST_DESCRIBE_STRUCT(

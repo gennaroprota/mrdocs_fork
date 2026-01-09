@@ -9,8 +9,8 @@
 // Official repository: https://github.com/cppalliance/mrdocs
 //
 
-#include "../../Reflection.hpp"
-#include "../../MapReflectedType.hpp"
+#include "../../Support/Reflection/Reflection.hpp"
+#include "../../Support/Reflection/MapReflectedType.hpp"
 #include <mrdocs/Dom/LazyObject.hpp>
 #include <mrdocs/Metadata/Name.hpp>
 #include <mrdocs/Metadata/Symbol/Record.hpp>

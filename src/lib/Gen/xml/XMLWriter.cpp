@@ -16,6 +16,7 @@
 #include "CXXTags.hpp"
 #include <lib/Support/LegibleNames.hpp>
 #include <lib/Support/Radix.hpp>
+#include <lib/Support/Reflection/EnumToString.hpp>
 #include <llvm/Support/YAMLTraits.h>
 
 //------------------------------------------------

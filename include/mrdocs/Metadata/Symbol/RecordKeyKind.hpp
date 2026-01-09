@@ -15,7 +15,6 @@
 
 #include <mrdocs/Platform.hpp>
 #include <mrdocs/Dom.hpp>
-#include <mrdocs/Support/EnumToString.hpp>
 #include <string>
 
 namespace mrdocs {
@@ -34,15 +33,11 @@ enum class RecordKeyKind
 
 /** Serialize the record key kind into a DOM value.
 */
-inline
 void
 tag_invoke(
     dom::ValueFromTag,
     dom::Value& v,
-    RecordKeyKind kind)
-{
-    v = toString(kind);
-}
+    RecordKeyKind kind);
 
 } // mrdocs
 

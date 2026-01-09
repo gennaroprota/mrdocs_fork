@@ -17,7 +17,7 @@
 #include <mrdocs/Platform.hpp>
 #include <mrdocs/ADT/Nullable.hpp>
 #include <mrdocs/Dom.hpp>
-#include <mrdocs/Support/EnumToString.hpp>
+#include <lib/Support/Reflection/EnumToString.hpp>
 #include <string>
 
 namespace mrdocs {
@@ -38,15 +38,11 @@ enum class FileKind
     @param v Destination value to populate.
     @param kind File category to serialize.
 */
-inline
 void
 tag_invoke(
     dom::ValueFromTag,
     dom::Value& v,
-    FileKind kind)
-{
-    v = toString(kind);
-}
+    FileKind kind);
 
 } // mrdocs
 

@@ -8,22 +8,27 @@
 // Official repository: https://github.com/cppalliance/mrdocs
 //
 
+#ifndef MRDOCS_LIB_SUPPORT_REFLECTION_ENUMTOSTRING_HPP
+#define MRDOCS_LIB_SUPPORT_REFLECTION_ENUMTOSTRING_HPP
+
 #include "Reflection.hpp"
 #include <mrdocs/Support/Assert.hpp>
-#include <mrdocs/Support/EnumToString.hpp>
-#include <mrdocs/Support/String.hpp>
 #include <boost/describe/enumerators.hpp>
 #include <boost/mp11.hpp>
+#include <string>
 
 namespace mrdocs {
 
+/** Convert a Boost.Describe'd enumerator to string form.
+
+    @param e The enumerator to convert.
+    @return The string form of the enumerator.
+*/
 template <typename Enum>
-    requires std::is_enum_v<Enum>
+    requires boost::describe::has_describe_enumerators<Enum>::value
 std::string
 toString(Enum e)
 {
-    static_assert(boost::describe::has_describe_enumerators<Enum>::value);
-
     std::string result;
     boost::mp11::mp_for_each<
         boost::describe::describe_enumerators<Enum>>(
@@ -43,9 +48,6 @@ toString(Enum e)
     MRDOCS_UNREACHABLE();
 }
 
-template std::string toString<ExtractionMode>(ExtractionMode);
-template std::string toString<FunctionClass>(FunctionClass);
-template std::string toString<RecordKeyKind>(RecordKeyKind);
-template std::string toString<UsingClass>(UsingClass);
-
 }
+
+#endif

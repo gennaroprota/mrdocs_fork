@@ -21,6 +21,7 @@
 #include <lib/Metadata/Finalizers/NamespacesFinalizer.hpp>
 #include <lib/Metadata/Finalizers/OverloadsFinalizer.hpp>
 #include <lib/Metadata/Finalizers/SortMembersFinalizer.hpp>
+#include <lib/Support/Reflection/EnumToString.hpp>
 #include <lib/Support/Chrono.hpp>
 #include <lib/Support/Report.hpp>
 #include <mrdocs/Metadata.hpp>

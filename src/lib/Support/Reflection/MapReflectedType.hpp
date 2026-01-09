@@ -8,8 +8,8 @@
 // Official repository: https://github.com/cppalliance/mrdocs
 //
 
-#ifndef MRDOCS_LIB_MAPREFLECTEDTYPE_HPP
-#define MRDOCS_LIB_MAPREFLECTEDTYPE_HPP
+#ifndef MRDOCS_LIB_SUPPORT_REFLECTION_MAPREFLECTEDTYPE_HPP
+#define MRDOCS_LIB_SUPPORT_REFLECTION_MAPREFLECTEDTYPE_HPP
 
 #include <mrdocs/Dom/LazyArray.hpp>
 #include <mrdocs/Metadata/Expression.hpp>

@@ -8,8 +8,8 @@
 // Official repository: https://github.com/cppalliance/mrdocs
 //
 
-#ifndef MRDOCS_LIB_REFLECTION_HPP
-#define MRDOCS_LIB_REFLECTION_HPP
+#ifndef MRDOCS_LIB_SUPPORT_REFLECTION_REFLECTION_HPP
+#define MRDOCS_LIB_SUPPORT_REFLECTION_REFLECTION_HPP
 
 #include <mrdocs/Metadata/DocComment/Inline/ImageInline.hpp>
 #include <mrdocs/Metadata/Symbol/Concept.hpp>

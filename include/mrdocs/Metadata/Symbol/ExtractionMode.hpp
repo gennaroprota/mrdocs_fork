@@ -14,7 +14,6 @@
 #define MRDOCS_API_METADATA_SYMBOL_EXTRACTIONMODE_HPP
 
 #include <mrdocs/Dom.hpp>
-#include <mrdocs/Support/EnumToString.hpp>
 
 namespace mrdocs {
 
@@ -58,15 +57,11 @@ enum class ExtractionMode
 
 /** Return the SymbolKind from a @ref dom::Value string.
 */
-inline
 void
 tag_invoke(
     dom::ValueFromTag,
     dom::Value& v,
-    ExtractionMode kind)
-{
-    v = toString(kind);
-}
+    ExtractionMode kind);
 
 /** Compare ExtractionModes and returns the least specific
 

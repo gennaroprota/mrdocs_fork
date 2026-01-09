@@ -17,7 +17,6 @@
 
 #include <mrdocs/Platform.hpp>
 #include <mrdocs/Dom.hpp>
-#include <mrdocs/Support/EnumToString.hpp>
 
 namespace mrdocs {
 
@@ -37,15 +36,11 @@ enum class FunctionClass
 
 /** Return the FunctionClass from a @ref dom::Value string.
 */
-inline
 void
 tag_invoke(
     dom::ValueFromTag,
     dom::Value& v,
-    FunctionClass const kind)
-{
-    v = toString(kind);
-}
+    FunctionClass const kind);
 
 } // mrdocs
 

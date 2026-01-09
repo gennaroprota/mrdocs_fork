@@ -18,7 +18,6 @@
 #include <mrdocs/Metadata/Symbol.hpp>
 #include <mrdocs/Metadata/Symbol/Source.hpp>
 #include <mrdocs/Metadata/Type.hpp>
-#include <mrdocs/Support/EnumToString.hpp>
 #include <vector>
 
 namespace mrdocs {
@@ -44,16 +43,11 @@ enum class UsingClass
     @param v The output value.
     @param kind The UsingClass to convert.
 */
-inline
 void
 tag_invoke(
     dom::ValueFromTag,
     dom::Value& v,
-    UsingClass kind)
-{
-    v = toString(kind);
-}
-
+    UsingClass kind);
 
 /** Info for using declarations.
 

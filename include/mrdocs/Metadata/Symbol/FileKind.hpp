@@ -17,7 +17,6 @@
 #include <mrdocs/Platform.hpp>
 #include <mrdocs/ADT/Nullable.hpp>
 #include <mrdocs/Dom.hpp>
-#include <lib/Support/Reflection/EnumToString.hpp>
 #include <string>
 
 namespace mrdocs {

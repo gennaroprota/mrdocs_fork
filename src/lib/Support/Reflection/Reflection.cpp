@@ -107,40 +107,33 @@ tag_invoke(
     DocComment const& I,
     DomCorpus const* domCorpus)
 {
-    io.defer("description", [&I, domCorpus] {
-        return dom::LazyArray(I.Document, domCorpus);
-    });
-    if (I.brief && !I.brief->children.empty())
-    {
-        io.map("brief", I.brief);
-    }
-    io.defer("returns", [&I, domCorpus] {
-        return dom::LazyArray(I.returns, domCorpus);
-    });
-    io.defer("params", [&I, domCorpus] {
-        return dom::LazyArray(I.params, domCorpus);
-    });
-    io.defer("tparams", [&I, domCorpus] {
-        return dom::LazyArray(I.tparams, domCorpus);
-    });
-    io.defer("exceptions", [&I, domCorpus] {
-        return dom::LazyArray(I.exceptions, domCorpus);
-    });
-    io.defer("sees", [&I, domCorpus] {
-        return dom::LazyArray(I.sees, domCorpus);
-    });
-    io.defer("relates", [&I, domCorpus] {
-        return dom::LazyArray(I.relates, domCorpus);
-    });
-    io.defer("related", [&I, domCorpus] {
-        return dom::LazyArray(I.related, domCorpus);
-    });
-    io.defer("preconditions", [&I, domCorpus] {
-        return dom::LazyArray(I.preconditions, domCorpus);
-    });
-    io.defer("postconditions", [&I, domCorpus] {
-        return dom::LazyArray(I.postconditions, domCorpus);
-    });
+    boost::mp11::mp_for_each<boost::describe::describe_members<
+        DocComment, boost::describe::mod_public>>([&](auto D)
+        {
+            constexpr std::string_view name = D.name;
+
+            if constexpr (name == "Document")
+            {
+                io.defer("description", [&I, domCorpus]
+                {
+                    return dom::LazyArray(I.Document, domCorpus);
+                });
+            }
+            else if constexpr (name == "brief")
+            {
+                if (I.brief && !I.brief->children.empty())
+                {
+                    io.map("brief", I.brief);
+                }
+            }
+            else
+            {
+                io.defer(D.name, [&I, domCorpus, ptr = D.pointer]
+                {
+                    return dom::LazyArray(I.*ptr, domCorpus);
+                });
+            }
+        });
 }
 
 template

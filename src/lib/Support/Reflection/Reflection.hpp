@@ -11,6 +11,7 @@
 #ifndef MRDOCS_LIB_SUPPORT_REFLECTION_REFLECTION_HPP
 #define MRDOCS_LIB_SUPPORT_REFLECTION_REFLECTION_HPP
 
+#include <mrdocs/Metadata/DocComment.hpp>
 #include <mrdocs/Metadata/DocComment/Inline/ImageInline.hpp>
 #include <mrdocs/Metadata/Symbol/Concept.hpp>
 #include <mrdocs/Metadata/Symbol/Enum.hpp>
@@ -40,6 +41,14 @@
 #include <boost/describe/enum.hpp>
 
 namespace mrdocs {
+
+BOOST_DESCRIBE_STRUCT(
+    DocComment,
+    (),
+    (Document, brief, returns, params, tparams,
+     exceptions, sees, preconditions, postconditions,
+     relates, related)
+)
 
 namespace doc {
 

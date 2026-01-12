@@ -58,8 +58,6 @@ doc::tag_invoke(
     doc::ImageInline const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(t, io, dynamic_cast<doc::Inline const&>(I), domCorpus);
-    tag_invoke(t, io, dynamic_cast<doc::InlineContainer const&>(I), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -83,7 +81,6 @@ tag_invoke(
     ConceptSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -157,7 +154,6 @@ tag_invoke(
     EnumConstantSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -207,7 +203,6 @@ tag_invoke(
     FunctionSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -231,7 +226,6 @@ tag_invoke(
     GuideSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -278,7 +272,6 @@ tag_invoke(
     NamespaceSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -302,7 +295,6 @@ tag_invoke(
     NamespaceAliasSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -326,7 +318,6 @@ tag_invoke(
     OverloadsSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -396,7 +387,6 @@ tag_invoke(
     RecordSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
     io.map("defaultAccess", getDefaultAccessString(I.KeyKind));
 }
@@ -421,7 +411,6 @@ tag_invoke(
     TypedefSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -445,7 +434,6 @@ tag_invoke(
     UsingSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 
@@ -469,7 +457,6 @@ tag_invoke(
     VariableSymbol const& I,
     DomCorpus const* domCorpus)
 {
-    tag_invoke(dom::LazyObjectMapTag{}, io, I.asInfo(), domCorpus);
     mapReflectedType(io, I, domCorpus);
 }
 

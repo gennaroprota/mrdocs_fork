@@ -186,6 +186,26 @@ mapReflectedType(
     T const& obj,
     DomCorpus const* domCorpus)
 {
+    // First, map all bases.
+    boost::mp11::mp_for_each<boost::describe::describe_bases<T, boost::describe::mod_any_access>>(
+        [&](auto const& descriptor)
+        {
+            using BaseType = typename std::decay_t<decltype(descriptor)>::type;
+
+            if constexpr (boost::describe::has_describe_members<BaseType>::value)
+            {
+                // Base is described: recurse.
+                mapReflectedType(io, static_cast<BaseType const&>(obj), domCorpus);
+            }
+            else
+            {
+                // Base is not described: map directly.
+                tag_invoke(dom::LazyObjectMapTag{}, io, static_cast<BaseType const&>(obj), domCorpus);
+            }
+        }
+    );
+
+    // Then, map all members.
     boost::mp11::mp_for_each<boost::describe::describe_members<T, boost::describe::mod_any_access>>(
         [&](auto const& descriptor) {
             using Descriptor = std::decay_t<decltype(descriptor)>;
